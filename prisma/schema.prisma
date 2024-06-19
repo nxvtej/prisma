@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// field type modifiers ? and [] (representing optional and many)
+
+model User {
+  // id          Int     @id @default(autoincrement()) //can be (uuid()) and make  it string
+  // more secure  why? cause they are completely random and unique
+  id              String           @id @default(uuid())
+  name            String? //this ? makes its optinal
+  email           String           @unique
+  role            Role
+  largeNumber     BigInt
+  age             Int
+  // preferences   Json //sql lite doesnt support jspono //doing later 
+  // blob        Bytes
+  // blob Unsupported("") 
+  // posts       Post[]
+  writtenPosts    Post[]           @relation("WrittenOosts")
+  favoritePosts   Post[]           @relation("favoritedPosts")
+  Userperferences Userperferences?
+
+  @@unique([age, name]) //block level
+  @@index([email])
+}
+
+// now these two creates one to many relationsship and many to one
+
+// like a blog artical
+model Post {
+  id            String   @id @default(uuid())
+  title         String
+  averageRating Float //also deciaml which is super precisse
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  author        User     @relation("WrittenOosts", fields: [authorid], references: [id])
+  authorid      String
+
+  favoritedBy   User?   @relation("favoritedPosts", fields: [favoritedById], references: [id])
+  favoritedById String?
+
+  Category   Category[]
+  categoryId String
+
+  // @@id([title, authorId])
+}
+
+// 3 types of relation
+// one to many
+// many ot many
+// one to one 
+
+// now many to many
+model Category {
+  id    String @id @default(uuid())
+  name  String @unique
+  posts Post[]
+}
+
+// now another perferences
+
+model Userperferences {
+  id           String  @id @default(uuid())
+  emailUpdates Boolean
+  user         User    @relation(fields: [userId], references: [id])
+  userId       String  @unique
+}
+
+// all these are field level attributes 
+// now block level
+
+enum Role {
+  BASIC
+  // EDITOR
+  ADMIN
+}
+
+// hard coded values that van be 
