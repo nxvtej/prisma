@@ -20,7 +20,7 @@ model User {
   // more secure  why? cause they are completely random and unique
   id               String           @id @default(uuid())
   name             String? //this ? makes its optinal
-  email            String           @unique
+  email            String //@unique
   role             Role
   largeNumber      BigInt
   age              Int

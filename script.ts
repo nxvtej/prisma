@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient({ log: ["query"]}); 
-// log all the query 
+const prisma = new PrismaClient(); 
+// log all the query { log: ["query"]}
 async function main() {
 // const user = await prisma.user.create({data: {
 //     name: "navdeep"
@@ -15,7 +15,7 @@ async function main() {
 // now if you try to delete user after adding user prefernecews
 // then we will get error as userperferences related to user
 
-
+/*
 const user = await prisma.user.createMany({
     data: [{
         name: "navdeep",
@@ -33,10 +33,17 @@ const user = await prisma.user.createMany({
     age: 27,
     role: "BASIC",
     largeNumber: 18634532,
-}]
+}],
 
     
 });
+*/
+
+const user = await prisma.user.findUnique({
+    where: {
+       email: "navdeep@gmail.com",
+    }
+})
 
 console.log(user);
 }
