@@ -18,19 +18,20 @@ datasource db {
 model User {
   // id          Int     @id @default(autoincrement()) //can be (uuid()) and make  it string
   // more secure  why? cause they are completely random and unique
-  id              String           @id @default(uuid())
-  name            String? //this ? makes its optinal
-  email           String           @unique
-  role            Role
-  largeNumber     BigInt
-  age             Int
+  id               String           @id @default(uuid())
+  name             String? //this ? makes its optinal
+  email            String           @unique
+  role             Role
+  largeNumber      BigInt
+  age              Int
   // preferences   Json //sql lite doesnt support jspono //doing later 
   // blob        Bytes
   // blob Unsupported("") 
   // posts       Post[]
-  writtenPosts    Post[]           @relation("WrittenOosts")
-  favoritePosts   Post[]           @relation("favoritedPosts")
-  Userperferences Userperferences?
+  writtenPosts     Post[]           @relation("WrittenOosts")
+  favoritePosts    Post[]           @relation("favoritedPosts")
+  userPerferences  Userperferences? @relation(fields: [userPreferenceId], references: [id])
+  userPreferenceId String?          @unique
 
   @@unique([age, name]) //block level
   @@index([email])
@@ -71,11 +72,18 @@ model Category {
 
 // now another perferences
 
+// model Userperferences {
+//   id           String  @id @default(uuid())
+//   emailUpdates Boolean
+//   user         User    @relation(fields: [userId], references: [id])
+//   userId       String  @unique
+// }
+
+// chaning the way they are dependent
 model Userperferences {
   id           String  @id @default(uuid())
   emailUpdates Boolean
-  user         User    @relation(fields: [userId], references: [id])
-  userId       String  @unique
+  user         User?
 }
 
 // all these are field level attributes 
